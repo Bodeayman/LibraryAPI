@@ -1,0 +1,32 @@
+name: Pre-Merge Validation
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@v3
+    
+    - name: Set Up Python
+      uses: actions/setup-python@v3
+      with:
+        python-version: '3.9'
+    
+    - name: Install Dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install flake8 pytest
+    
+    - name: Run Linter
+      run: flake8 . .
+    
+    - name: Run Unit Tests
+      run: |
+        cd ${{ github.workspace }}
+        PYTHONPATH=. pytest 
